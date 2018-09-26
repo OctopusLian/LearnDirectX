@@ -16,10 +16,12 @@
     cb.vMeshColor = g_vMeshColor;
     g_pImmediateContext->UpdateSubresource( g_pCBChangesEveryFrame, 0, NULL, &cb, 0, 0 );  
 ```  
+#### 注意  
+1，资源我们可以理解为：显存。  
 
-要计算给定资源的源行间距和源深度间距，使用以下公式:  
-**数据源行间距=[一个元素的字节大小] * [一行中的元素数量]**   
-**数据源深度间距=[源行间距]*[行数(高)]**  
+2，要计算给定资源的源行间距和源深度间距，使用以下公式:  
+**源行间距=[一个元素的字节大小] * [一行中的元素数量]**   
+**源深度间距=[源行间距]*[行数(高)]**  
 
 #### 参考资料：  
 [微软官方文档-UpdateSubresource](https://docs.microsoft.com/en-us/windows/desktop/api/d3d11/nf-d3d11-id3d11devicecontext-updatesubresource)  

@@ -1,7 +1,7 @@
 void UpdateSubresource(  
-  [in]  ID3D11Resource *pDstResource,   //要贴纹理的目标
-  [in]  UINT DstSubresource,  
-  [in]  const D3D11_BOX *pDstBox, // 这个用来描述要覆盖目标的那个区域  
+  [in]  ID3D11Resource *pDstResource,   //指向目标资源的指针
+  [in]  UINT DstSubresource,    //一个从零开始的索引，用来标识目标子资源
+  [in]  const D3D11_BOX *pDstBox, // 用来描述要覆盖目标的那个区域  
   [in]  const void *pSrcData, // 数据源，可以理解为内存  
   [in]  UINT SrcRowPitch, // 数据源行间距  
   [in]  UINT SrcDepthPitch // 数据源深度间距  
