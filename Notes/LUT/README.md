@@ -10,6 +10,6 @@ LUT全称look-up-table（显示查找表），LUT本质上就是一个RAM。
 
 
 #### 参考资料  
-(LUT【显示查找表（Look-Up-Table)】--详解)[http://zhan.renren.com/zmovieheaven?gid=3602888498061925025&checked=true]  
+[LUT【显示查找表（Look-Up-Table)】--详解](http://zhan.renren.com/zmovieheaven?gid=3602888498061925025&checked=true)  
 
 
