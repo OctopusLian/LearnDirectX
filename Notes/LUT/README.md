@@ -8,6 +8,12 @@ LUT全称look-up-table（显示查找表），LUT本质上就是一个RAM。
 - 较色：直接添加LUT就能自动调节成一个较好的画面效果；    
 - 白平衡处理：加载了白平衡LUT的色彩空间转换器以获得正常色彩关系的监看画面。  
 
+#### 1D LUT  
+gamma值，RGB平衡（灰阶）和白场。  
+
+#### 3D LUTs  
+做颜色校准。  
+
 
 #### 参考资料  
 [LUT【显示查找表（Look-Up-Table)】--详解](http://zhan.renren.com/zmovieheaven?gid=3602888498061925025&checked=true)  
