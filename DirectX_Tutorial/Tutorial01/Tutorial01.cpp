@@ -56,7 +56,7 @@ int WINAPI wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdL
     MSG msg = {0};
     while( WM_QUIT != msg.message )
     {
-        if( PeekMessage( &msg, NULL, 0, 0, PM_REMOVE ) )
+        if( PeekMessage( &msg, NULL, 0, 0, PM_REMOVE ) )  //当没有消息等待时，PeekMessage()立即返回，而不是阻塞
         {
             TranslateMessage( &msg );
             DispatchMessage( &msg );
@@ -170,7 +170,8 @@ HRESULT InitDevice()
         D3D_FEATURE_LEVEL_10_0,
     };
 	UINT numFeatureLevels = ARRAYSIZE( featureLevels );
-
+	
+	//创建设备和交换链
     DXGI_SWAP_CHAIN_DESC sd;
     ZeroMemory( &sd, sizeof( sd ) );
     sd.BufferCount = 1;
@@ -209,7 +210,7 @@ HRESULT InitDevice()
 
     g_pImmediateContext->OMSetRenderTargets( 1, &g_pRenderTargetView, NULL );
 
-    // Setup the viewport
+    // Setup the viewport  初始化viewport
     D3D11_VIEWPORT vp;
     vp.Width = (FLOAT)width;
     vp.Height = (FLOAT)height;
@@ -229,7 +230,7 @@ HRESULT InitDevice()
 void Render()
 {
     // Just clear the backbuffer
-    float ClearColor[4] = { 0.0f, 0.125f, 0.3f, 1.0f }; //red,green,blue,alpha
+    float ClearColor[4] = { 0.5f, 0.5f, 0.5f, 0.5f }; //red,green,blue,alpha
     g_pImmediateContext->ClearRenderTargetView( g_pRenderTargetView, ClearColor );
     g_pSwapChain->Present( 0, 0 );
 }

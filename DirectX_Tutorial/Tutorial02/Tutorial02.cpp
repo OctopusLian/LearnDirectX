@@ -16,11 +16,11 @@
 //--------------------------------------------------------------------------------------
 // Structures
 //--------------------------------------------------------------------------------------
+//在本教程中，我们只处理顶点的位置。因此，我们使用XMFLOAT3类型的单个字段定义顶点结构。这种类型是由三个浮点组件组成的向量，通常是3D中用于位置的数据类型。
 struct SimpleVertex
 {
     XMFLOAT3 Pos;
 };
-
 
 //--------------------------------------------------------------------------------------
 // Global Variables
@@ -298,13 +298,13 @@ HRESULT InitDevice()
         XMFLOAT3( 0.5f, -0.5f, 0.5f ),
         XMFLOAT3( -0.5f, -0.5f, 0.5f ),
     };
-    D3D11_BUFFER_DESC bd;
-	ZeroMemory( &bd, sizeof(bd) );
+    D3D11_BUFFER_DESC bd;  //描述要创建的顶点缓冲区对象
+	ZeroMemory( &bd, sizeof(bd) );  
     bd.Usage = D3D11_USAGE_DEFAULT;
     bd.ByteWidth = sizeof( SimpleVertex ) * 3;
     bd.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bd.CPUAccessFlags = 0;
-    D3D11_SUBRESOURCE_DATA InitData;
+    D3D11_SUBRESOURCE_DATA InitData;  //描述在创建期间将要复制到顶点缓冲区的实际数据
 	ZeroMemory( &InitData, sizeof(InitData) );
     InitData.pSysMem = vertices;
     hr = g_pd3dDevice->CreateBuffer( &bd, &InitData, &g_pVertexBuffer );
@@ -314,7 +314,7 @@ HRESULT InitDevice()
     // Set vertex buffer
     UINT stride = sizeof( SimpleVertex );
     UINT offset = 0;
-    g_pImmediateContext->IASetVertexBuffers( 0, 1, &g_pVertexBuffer, &stride, &offset );
+    g_pImmediateContext->IASetVertexBuffers( 0, 1, &g_pVertexBuffer, &stride, &offset );  //将其绑定到设备
 
     // Set primitive topology
     g_pImmediateContext->IASetPrimitiveTopology( D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST );
@@ -380,7 +380,8 @@ void Render()
     // Render a triangle
 	g_pImmediateContext->VSSetShader( g_pVertexShader, NULL, 0 );
 	g_pImmediateContext->PSSetShader( g_pPixelShader, NULL, 0 );
-    g_pImmediateContext->Draw( 3, 0 );
+    g_pImmediateContext->Draw(3, 0 );  //命令GPU使用当前顶点缓冲区、顶点布局和基本拓扑呈现。
+	                                    //Draw()的第一个参数是要发送到GPU的顶点数，第二个参数是要开始发送的第一个顶点的索引。因为我们渲染一个三角形，我们从顶点缓冲区的开始渲染，我们分别使用3和0作为两个参数。
 
     // Present the information rendered to the back buffer to the front buffer (the screen)
     g_pSwapChain->Present( 0, 0 );

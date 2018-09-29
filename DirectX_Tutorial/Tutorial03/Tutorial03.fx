@@ -7,8 +7,8 @@
 //--------------------------------------------------------------------------------------
 // Vertex Shader
 //--------------------------------------------------------------------------------------
-float4 VS( float4 Pos : POSITION ) : SV_POSITION
-{
+float4 VS( float4 Pos : POSITION ) : SV_POSITION    //POSITION作为Pos输入参数的语义，因为这个参数将包含顶点位置
+{                                                   //SV_POSITION是一种具有特殊含义的预定义语义。这个语义告诉图形管道，与语义相关联的数据定义了剪贴空间位置
     return Pos;
 }
 
@@ -16,7 +16,7 @@ float4 VS( float4 Pos : POSITION ) : SV_POSITION
 //--------------------------------------------------------------------------------------
 // Pixel Shader
 //--------------------------------------------------------------------------------------
-float4 PS( float4 Pos : SV_POSITION ) : SV_Target
+float4 PS( float4 Pos : SV_POSITION ) : SV_Target  //输出到呈现目标格式
 {
     return float4( 1.0f, 1.0f, 0.0f, 1.0f );    // Yellow, with Alpha = 1
 }
