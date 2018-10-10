@@ -23,7 +23,7 @@
 #### 参考资料：  
 [微软官方文档-UpdateSubresource](https://docs.microsoft.com/en-us/windows/desktop/api/d3d11/nf-d3d11-id3d11devicecontext-updatesubresource)  
 [微软官方文档-D3D11CalcSubresource](https://docs.microsoft.com/en-us/windows/desktop/api/d3d11/nf-d3d11-d3d11calcsubresource)   
-![Row_Depth_Pitch](https://github.com/OctopusLian/LearnDirectX/blob/master/Notes/UpdateSubresource%E5%87%BD%E6%95%B0/Row_Depth_Pitch.png)  
+![Row_Depth_Pitch](https://github.com/OctopusLian/LearnDirectX/blob/master/Notes/UpdateSubresource%20function/Row_Depth_Pitch.png)  
 翻译如下：  
 这个可视化中的每个块代表一个数据元素，每个元素的大小取决于资源的格式。例如，如果资源格式是DXGI_FORMAT_R32G32B32A32_FLOAT，则每个元素的大小为128位，即16字节（1个字节=8位）。  
 这个3D体块纹理的宽度为2，高度为3，深度为4。    
