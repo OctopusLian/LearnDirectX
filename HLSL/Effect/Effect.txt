@@ -1,0 +1,86 @@
+//---------------------------------------------
+//                    VS
+//---------------------------------------------
+matrix WVPMatrix;
+
+struct VS_INPUT
+{
+    vector position : POSITION;
+    float2 uvCoords0 : TEXCOORD0;
+    float2 uvCoords1 : TEXCOORD1;
+};
+
+struct VS_OUTPUT
+{
+    vector position : POSITION;
+    float2 uvCoords0 : TEXCOORD0;
+    float2 uvCoords1 : TEXCOORD1;
+};
+
+VS_OUTPUT VS_Main(VS_INPUT input)
+{
+	VS_OUTPUT output = (VS_OUTPUT)0;
+	
+	output.position = mul(input.position, WVPMatrix);
+	
+	output.uvCoords0 = input.uvCoords0;
+	output.uvCoords1 = input.uvCoords1;
+	
+	return output;
+}
+
+//---------------------------------------------
+//                    PS
+//---------------------------------------------
+vector Scalar;
+
+texture Tex0;
+texture Tex1;
+
+sampler Samp0 = 
+sampler_state
+{
+    Texture = <Tex0>;
+    MipFilter = LINEAR;
+    MinFilter = LINEAR;
+    MagFilter = LINEAR;
+};
+
+sampler Samp1 =
+sampler_state
+{
+    Texture = <Tex1>;
+    MipFilter = LINEAR;
+    MinFilter = LINEAR;
+    MagFilter = LINEAR;
+};
+
+struct PS_INPUT
+{
+	float2 uvCoords0 : TEXCOORD0;
+	float2 uvCoords1 : TEXCOORD1;
+};
+
+struct PS_OUTPUT
+{
+	float4 Color : COLOR0;
+};
+
+PS_OUTPUT PS_Main(PS_INPUT input)
+{
+	PS_OUTPUT output = (PS_OUTPUT)0;
+	output.Color = tex2D(Samp0, input.uvCoords0)*Scalar.x + tex2D(Samp1, input.uvCoords1)*Scalar.y;
+	return output;
+}
+
+//---------------------------------------------
+//                    effect
+//---------------------------------------------
+technique T0
+{
+	pass P0
+	{
+		vertexShader = compile vs_1_1 VS_Main();
+		pixelShader = compile ps_1_1 PS_Main();
+	}
+}
