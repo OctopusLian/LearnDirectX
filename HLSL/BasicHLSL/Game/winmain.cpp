@@ -8,13 +8,13 @@
 HWND                             g_hWnd;
 HINSTANCE                       g_hInst;
 
-IDirect3DVertexShader9* BasicShader = 0;
+IDirect3DVertexShader9* BasicShader = 0;  //定点着色器指针
 ID3DXConstantTable* BasicConstTable = 0;
 
-D3DXHANDLE WVPMatrixHandle          = 0;
-D3DXHANDLE ColorHandle              = 0;
+D3DXHANDLE WVPMatrixHandle          = 0;  //设置句柄
+D3DXHANDLE ColorHandle              = 0;  //设置句柄
 
-ID3DXMesh* Teapot                   = 0;
+ID3DXMesh* Teapot                   = 0;  //指向程序中D3D茶壶模型的指针
 
 INT WINAPI WinMain(HINSTANCE hInst, HINSTANCE, LPSTR, INT);
 LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -86,12 +86,12 @@ int Game_Init()
 	HRESULT hr = D3DXCompileShaderFromFile("BasicHLSL.txt",
 										   0,
 										   0,
-										   "SetColor", // entry point function name
-										   "vs_1_1",
-										   D3DXSHADER_DEBUG,
-										   &shaderBuffer,
+										   "SetColor", // 入口函数名称
+										   "vs_1_1",  //顶点着色器版本号
+										   D3DXSHADER_DEBUG,  //DEBUG模式编译
+										   &shaderBuffer,  //指向编译后的着色器代码的指针
 										   &errorBuffer,
-										   &BasicConstTable);
+										   &BasicConstTable);  //常量表指针
 
 	// output any error messages
 	if(errorBuffer)
@@ -117,34 +117,44 @@ int Game_Init()
 
 	ReleaseCOM(shaderBuffer);
 
-	WVPMatrixHandle = BasicConstTable->GetConstantByName(0, "WVPMatrix");
+	//通过变量名分别得到对应的两个句柄
+	WVPMatrixHandle = BasicConstTable->GetConstantByName(0, "WVPMatrix");  
 	ColorHandle = BasicConstTable->GetConstantByName(0, "color");
 
-	BasicConstTable->SetDefaults(g_pd3dDevice);
+	//通过句柄对着色器变量进行赋值
+	BasicConstTable->SetDefaults(g_pd3dDevice);  //先设置各变量为默认值
 
 	return 1;
 }
 
+//渲染代码如下
 int Game_Main()
 {
+	//设定顶点的变换坐标和颜色值
 	g_pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(153,153,153), 1.0f, 0 );
-	g_pd3dDevice->BeginScene();
+	g_pd3dDevice->BeginScene();  //开始渲染
 
+	//得到世界矩阵、观察矩阵和投影矩阵
 	D3DXMATRIX matWorld, matView, matProj;
 	g_pd3dDevice->GetTransform(D3DTS_WORLD, &matWorld);
 	g_pd3dDevice->GetTransform(D3DTS_VIEW, &matView);
 	g_pd3dDevice->GetTransform(D3DTS_PROJECTION, &matProj);
 
 	D3DXMATRIX matWVP = matWorld * matView * matProj;
+	//通过句柄对着色器中的WVPMatrix 变量进行赋值
 	BasicConstTable->SetMatrix(g_pd3dDevice, WVPMatrixHandle, &matWVP);
 	
 	D3DXVECTOR4 color(1.0f, 1.0f, 0.0f, 1.0f);
+	//通过句柄对着色器中的color变量进行赋值，这里我们赋值为黄色
 	BasicConstTable->SetVector(g_pd3dDevice, ColorHandle, &color);
 
+	//把顶点着色器设定到渲染管道中
 	g_pd3dDevice->SetVertexShader(BasicShader);
 
+	//绘制模型子集
 	Teapot->DrawSubset(0);
 
+	//渲染完毕
 	g_pd3dDevice->EndScene();
 	g_pd3dDevice->Present(NULL, NULL, NULL, NULL);
 
