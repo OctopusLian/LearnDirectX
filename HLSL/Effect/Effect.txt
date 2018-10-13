@@ -80,7 +80,7 @@ technique T0
 {
 	pass P0
 	{
-		vertexShader = compile vs_1_1 VS_Main();
-		pixelShader = compile ps_1_1 PS_Main();
+		vertexShader = compile vs_2_0 VS_Main();
+		pixelShader = compile ps_2_0 PS_Main();
 	}
 }

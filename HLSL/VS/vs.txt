@@ -1,8 +1,14 @@
+//全局变量
+//世界矩阵、观察矩阵、投影矩阵的合矩阵，用于顶点的坐标变换
 matrix WVPMatrix;
 
+//光照方向
 vector LightDirection;
+//存储公式 S = t/T中的时间标尺的值
+//注意：Scalar是一个vector类型，Scalar.x中存储了S值，Scalar.y中则是（1-S）。
 vector Scalar;
 
+//输入
 struct VS_INPUT
 {
     vector position : POSITION;
@@ -12,6 +18,7 @@ struct VS_INPUT
     float2 uvCoords : TEXCOORD;
 };
 
+//输出
 struct VS_OUTPUT
 {
     vector position : POSITION;
@@ -19,16 +26,21 @@ struct VS_OUTPUT
     float2 uvCoords : TEXCOORD;
 };
 
+//入口函数
 VS_OUTPUT Main(VS_INPUT input)
 {
     VS_OUTPUT output = (VS_OUTPUT)0;
     
+    //顶点最终位置output.position取决于源网络模型数据流中位置信息input.position和目标网络模型数据流中位置信息input.position1以及时间标尺Scalar的值
     output.position = input.position*Scalar.x + input.position1*Scalar.y;
     output.position = mul(output.position, WVPMatrix);
     
+    //计算顶点最终法线值
     vector normal = input.normal*Scalar.x + input.normal1*Scalar.y;
+    //逆光方向与法线的点积，获得漫射色彩
     output.diffuse = dot((-LightDirection), normal);
     
+    //存储纹理坐标
     output.uvCoords = input.uvCoords; 
     
     return output;

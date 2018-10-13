@@ -7,7 +7,9 @@
 
 struct CUSTOMVERTEX
 {
+	//定点位置坐标
 	float x,y,z;
+	//两套纹理坐标
 	float tu0, tv0;
 	float tu1, tv1;
 };
@@ -17,18 +19,25 @@ struct CUSTOMVERTEX
 HWND                             g_hWnd;
 HINSTANCE                       g_hInst;
 
+//*******声明变量********
 //pixel shader parameters
+//顶点着色器
 LPDIRECT3DPIXELSHADER9 pixelShader   = 0;
+//常量表
 ID3DXConstantTable* pixelConstTable  = 0;
 
+//常量句柄
 D3DXHANDLE ScalarHandle              = 0;
 D3DXHANDLE Samp0Handle                = 0;
 D3DXHANDLE Samp1Handle                = 0;
 
+//常量描述结构
 D3DXCONSTANT_DESC Samp0Desc;
 D3DXCONSTANT_DESC Samp1Desc;
 
+//四边形顶点缓存
 LPDIRECT3DVERTEXBUFFER9 quadVB  = NULL;
+//两个纹理
 LPDIRECT3DTEXTURE9 quadTexture0 = NULL; 
 LPDIRECT3DTEXTURE9 quadTexture1 = NULL;
 
@@ -90,11 +99,13 @@ LRESULT WINAPI MsgProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     return DefWindowProc(hWnd, msg, wParam, lParam);
 }
 
+//*******初始化应用程序*********
 int Game_Init()
 {
 	D3D_Init();
 
 	//set up vertex buffer
+	//创建四边形顶点模拟
 	CUSTOMVERTEX quad[] = 
 	//  x      y      z    tu0   tv0   tu1   tv1 
 	{{-3.0f, -3.0f, 10.0f, 0.0f, 1.0f, 0.0f, 1.0f},
@@ -102,6 +113,7 @@ int Game_Init()
 	{  3.0f, -3.0f, 10.0f, 1.0f, 1.0f, 1.0f, 1.0f},
 	{  3.0f,  3.0f, 10.0f, 1.0f, 0.0f, 1.0f, 0.0f}};
 
+	//创建顶点缓存
 	void *ptr = NULL;
 	g_pd3dDevice->CreateVertexBuffer(sizeof(quad),
 									 D3DUSAGE_WRITEONLY,
@@ -113,10 +125,13 @@ int Game_Init()
 	memcpy((void*)ptr, (void*)quad, sizeof(quad));
 	quadVB->Unlock();
 
-	//set up texture
+	//set up texture 
+	//创建纹理
+	//读这个纹理上传到显存里去
 	D3DXCreateTextureFromFile(g_pd3dDevice, "porpcart.jpg", &quadTexture0);
 	D3DXCreateTextureFromFile(g_pd3dDevice, "luoqi.jpg", &quadTexture1);
 
+	//检测系统是否支持像素着色器
 	//detect if pixel shader is supported by the device
 	D3DCAPS9 caps;
 	g_pd3dDevice->GetDeviceCaps(&caps);
@@ -127,6 +142,7 @@ int Game_Init()
 	}
 
 	//create pixel shader
+	//创建像素着色器
 	ID3DXBuffer* codeBuffer        = 0;
 	ID3DXBuffer* errorBuffer       = 0;
 
@@ -134,7 +150,7 @@ int Game_Init()
 										   0,
 										   0,
 										   "PS_Main", // entry point function name
-										   "ps_1_1",
+										   "ps_2_0",
 										   D3DXSHADER_DEBUG,
 										   &codeBuffer,
 										   &errorBuffer,
@@ -165,36 +181,45 @@ int Game_Init()
 	ReleaseCOM(codeBuffer);
 	ReleaseCOM(errorBuffer);
 
+	//得到各常量句柄
 	ScalarHandle = pixelConstTable->GetConstantByName(0, "Scalar");
 	Samp0Handle = pixelConstTable->GetConstantByName(0, "Samp0");
 	Samp1Handle = pixelConstTable->GetConstantByName(0, "Samp1");
 
+	//得到对着色器变量Samp0，Samp1的描述
 	UINT count;
 	pixelConstTable->GetConstantDesc(Samp0Handle, &Samp0Desc, &count);
 	pixelConstTable->GetConstantDesc(Samp1Handle, &Samp1Desc, &count);
 
+	//设定各着色器变量为初始值
 	pixelConstTable->SetDefaults(g_pd3dDevice);
 
 	return 1;
 }
 
+//***********渲染***********
 int Game_Main()
 {
 	g_pd3dDevice->Clear( 0, NULL, D3DCLEAR_TARGET | D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(153,153,153), 1.0f, 0 );
 	g_pd3dDevice->BeginScene();
 
+	//为着色器全局变量Scalar赋值
 	D3DXVECTOR4 scalar(0.5f, 0.5f, 0.0f, 1.0f);
 	pixelConstTable->SetVector(g_pd3dDevice, ScalarHandle, &scalar);
 
+	//设置像素着色器
 	g_pd3dDevice->SetPixelShader(pixelShader);
 
+	//设置定点格式，绑定数据流
 	g_pd3dDevice->SetFVF(D3DFVF_CUSTOMVERTEX);
 	g_pd3dDevice->SetStreamSource(0, quadVB, 0, sizeof(CUSTOMVERTEX));
 
 	//set texture
+	//设置第一、二层纹理
 	g_pd3dDevice->SetTexture(Samp0Desc.RegisterIndex, quadTexture0);
 	g_pd3dDevice->SetTexture(Samp1Desc.RegisterIndex, quadTexture1);
 
+	//绘制图形
 	g_pd3dDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
 
 	g_pd3dDevice->EndScene();

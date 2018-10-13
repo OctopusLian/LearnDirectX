@@ -1,8 +1,12 @@
+//全局变量
+//存储颜色混合的比例值s，Scalar.x=s，Scalar.y=1-s
 vector Scalar;
 
+//纹理
 texture Tex0;
 texture Tex1;
 
+//纹理采样器
 sampler Samp0 = 
 sampler_state
 {
@@ -21,20 +25,24 @@ sampler_state
     MagFilter = LINEAR;
 };
 
+//输入两套纹理坐标
 struct PS_INPUT
 {
 	float2 uvCoords0 : TEXCOORD0;
 	float2 uvCoords1 : TEXCOORD1;
 };
 
+//输出像素颜色
 struct PS_OUTPUT
 {
 	float4 Color : COLOR0;
 };
 
+//入口函数
 PS_OUTPUT PS_Main(PS_INPUT input)
 {
 	PS_OUTPUT output = (PS_OUTPUT)0;
+	//分别对两个纹理进行采样，按照比例混合后输出颜色值
 	output.Color = tex2D(Samp0, input.uvCoords0)*Scalar.x + tex2D(Samp1, input.uvCoords1)*Scalar.y;
 	return output;
 }
